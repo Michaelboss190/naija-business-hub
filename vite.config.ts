@@ -12,19 +12,20 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
-    open: true,
   },
   build: {
     outDir: 'dist',
     sourcemap: false,
-    minify: 'terser',
+    // Add content hash to file names for cache busting
     rollupOptions: {
       output: {
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
-          ui: ['framer-motion', '@headlessui/react', '@heroicons/react'],
+          ui: ['framer-motion'],
           data: ['@tanstack/react-query', '@supabase/supabase-js', 'zustand'],
-          forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
         },
       },
     },
