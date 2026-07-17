@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased text-gray-900 bg-white dark:text-gray-100 dark:bg-dark-900;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  /* Force dark mode on all inputs, selects, textareas */
+  .dark input[type="text"],
+  .dark input[type="email"],
+  .dark input[type="password"],
+  .dark input[type="number"],
+  .dark input[type="search"],
+  .dark input[type="tel"],
+  .dark input[type="url"],
+  .dark textarea {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+    border-color: #334155 !important;
+  }
+
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: #64748b !important;
+  }
+
+  .dark select {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+    border-color: #334155 !important;
+  }
+
+  .dark select option {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+  }
+
+  /* Fix focus states */
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    border-color: #22c55e !important;
+    ring-color: #22c55e !important;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .card {
+    @apply bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-xl;
+  }
+
+  .input {
+    @apply w-full px-4 py-3 rounded-lg border border-gray-300;
+  }
+
+  .select {
+    @apply w-full px-4 py-3 rounded-lg border border-gray-300;
+  }
+
+  .textarea {
+    @apply w-full px-4 py-3 rounded-lg border border-gray-300 resize-none;
+  }
+}
+
+/* Dark mode autofill override */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark textarea:-webkit-autofill,
+.dark textarea:-webkit-autofill:hover,
+.dark textarea:-webkit-autofill:focus,
+.dark select:-webkit-autofill,
+.dark select:-webkit-autofill:hover,
+.dark select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #e2e8f0 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #1e293b inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+.dark ::-webkit-scrollbar-track { background: #1e293b; }
+::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+.dark ::-webkit-scrollbar-thumb { background: #475569; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+/* Selection */
+::selection { background-color: #22c55e; color: white; }
+
+/* Prose overrides for dark mode */
+.dark .prose {
+  color: #e2e8f0;
+}
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4,
+.dark .prose strong {
+  color: #f1f5f9;
+}
+.dark .prose a {
+  color: #4ade80;
+}
+.dark .prose code {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}

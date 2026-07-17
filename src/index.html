@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/images/logo-light.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="NaijaBizHub - The #1 platform for Nigerian entrepreneurs. Connect, learn, and grow your business." />
+    <meta name="theme-color" content="#16a34a" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>NaijaBizHub - Nigeria's Business Community</title>
+    <script src="https://js.paystack.co/v2/inline.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js').then(function(r) { console.log('SW registered:', r.scope) }, function(e) { console.log('SW failed:', e) })
+        })
+      }
+    </script>
+  </body>
+</html>

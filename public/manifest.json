@@ -1,0 +1,21 @@
+{
+  "name": "NaijaBizHub - Nigeria's Business Community",
+  "short_name": "NaijaBizHub",
+  "description": "The ultimate platform for Nigerian entrepreneurs and professionals",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#16a34a",
+  "icons": [
+    {
+      "src": "/images/logo-dark.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/logo-dark.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
