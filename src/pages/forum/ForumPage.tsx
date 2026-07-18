@@ -107,7 +107,7 @@ export default function ForumPage() {
                         {/* Author Avatar */}
                         <div className="flex-shrink-0 w-10 h-10 bg-gray-100 dark:bg-dark-700 rounded-full flex items-center justify-center overflow-hidden">
                           {post.author?.avatar_url ? (
-                            <img src={post.author.avatar_url} alt={post.author?.full_name || ''} className="w-full h-full object-cover" />
+                            <img loading="lazy" src={post.author.avatar_url} alt={post.author?.full_name || ''} className="w-full h-full object-cover" />
                           ) : (
                             <span className="text-gray-600 dark:text-gray-400 font-semibold text-sm">{post.author?.full_name?.[0]?.toUpperCase() || 'U'}</span>
                           )}

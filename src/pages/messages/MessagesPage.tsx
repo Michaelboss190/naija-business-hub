@@ -64,7 +64,7 @@ export default function MessagesPage() {
         <div className="text-6xl mb-4">💌</div>
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Premium Feature</h2>
         <p className="text-gray-600 dark:text-gray-400 mb-6">Private messaging is available for premium members only.</p>
-        <Button onClick={function() { navigate('/pricing') }}>Upgrade to Premium - ₦1,000/mo</Button>
+        <Button onClick={function() { navigate('/pricing') }} aria-label="Button">Upgrade to Premium - ₦1,000/mo</Button>
       </div>
     )
   }
@@ -84,11 +84,11 @@ export default function MessagesPage() {
             const other = conv.participant1_id === profile?.id ? conv.participant2 : conv.participant1
             const isActive = conversationId === conv.id
             return (
-              <button key={conv.id} onClick={function() { navigate('/messages/' + conv.id) }} className={'w-full text-left p-4 hover:bg-gray-50 dark:hover:bg-dark-700 transition-colors border-b border-gray-100 dark:border-dark-700 ' + (isActive ? 'bg-primary-50 dark:bg-primary-900/20' : '')}>
+              <button key={conv.id} onClick={function() { navigate('/messages/' + conv.id) }} className={'w-full text-left p-4 hover:bg-gray-50 dark:hover:bg-dark-700 transition-colors border-b border-gray-100 dark:border-dark-700 ' + (isActive ? 'bg-primary-50 dark:bg-primary-900/20' : '')} aria-label="Button">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gray-100 dark:bg-dark-700 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
                     {other?.avatar_url ? (
-                      <img src={other.avatar_url} alt={other?.full_name || ''} className="w-full h-full object-cover" />
+                      <img loading="lazy" src={other.avatar_url} alt={other?.full_name || ''} className="w-full h-full object-cover" />
                     ) : (
                       <span className="text-gray-600 dark:text-gray-400 font-semibold text-sm">{(other?.full_name || 'U')[0]?.toUpperCase()}</span>
                     )}
@@ -112,10 +112,10 @@ export default function MessagesPage() {
         {conversationId && otherParticipant ? (
           <>
             <div className="flex items-center space-x-3 p-4 border-b border-gray-200 dark:border-dark-700">
-              <button className="md:hidden text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" onClick={function() { navigate('/messages') }}><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg></button>
+              <button className="md:hidden text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" onClick={function() { navigate('/messages') }} aria-label="Button"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg></button>
               <div className="w-10 h-10 bg-gray-100 dark:bg-dark-700 rounded-full flex items-center justify-center overflow-hidden">
                 {otherParticipant?.avatar_url ? (
-                  <img src={otherParticipant.avatar_url} alt={otherParticipant?.full_name || ''} className="w-full h-full object-cover" />
+                  <img loading="lazy" src={otherParticipant.avatar_url} alt={otherParticipant?.full_name || ''} className="w-full h-full object-cover" />
                 ) : (
                   <span className="text-gray-600 dark:text-gray-400 font-semibold">{(otherParticipant?.full_name || 'U')[0]?.toUpperCase()}</span>
                 )}
@@ -139,7 +139,7 @@ export default function MessagesPage() {
             <div className="p-4 border-t border-gray-200 dark:border-dark-700">
               <div className="flex items-center space-x-2">
                 <input type="text" value={messageText} onChange={function(e) { setMessageText(e.target.value) }} onKeyPress={function(e) { if (e.key === 'Enter') sendMessage() }} placeholder="Type a message..." className="flex-1 px-4 py-2 rounded-full border border-gray-300 dark:border-dark-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-primary-500" />
-                <button onClick={sendMessage} disabled={!messageText.trim()} className="p-2 bg-primary-600 text-white rounded-full hover:bg-primary-700 disabled:opacity-50 transition-colors"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg></button>
+                <button onClick={sendMessage} disabled={!messageText.trim()} className="p-2 bg-primary-600 text-white rounded-full hover:bg-primary-700 disabled:opacity-50 transition-colors" aria-label="Button"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg></button>
               </div>
             </div>
           </>

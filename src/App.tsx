@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/config/supabase'
 import ScrollToTop from '@/components/ui/ScrollToTop'
@@ -51,11 +51,18 @@ import PricingPage from '@/pages/PricingPage'
 import AboutPage from '@/pages/AboutPage'
 import ContactPage from '@/pages/ContactPage'
 import NotFoundPage from '@/pages/NotFoundPage'
-import AdminDashboard from '@/pages/admin/AdminDashboard'
-import AdminUsers from '@/pages/admin/AdminUsers'
-import AdminContent from '@/pages/admin/AdminContent'
-import AdminPayments from '@/pages/admin/AdminPayments'
+const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard'))
+const AdminUsers = lazy(() => import('@/pages/admin/AdminUsers'))
+const AdminContent = lazy(() => import('@/pages/admin/AdminContent'))
+const AdminPayments = lazy(() => import('@/pages/admin/AdminPayments'))
 
+function PageLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+    </div>
+  )
+}
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -165,7 +172,7 @@ export default function App() {
             </Route>
 
             {/* Admin routes */}
-            <Route path="/admin" element={<AdminLayout />}>
+            <Route path="/admin" element={<Suspense fallback={<PageLoading />}><AdminLayout /></Suspense>}>
               <Route index element={<AdminDashboard />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="content" element={<AdminContent />} />

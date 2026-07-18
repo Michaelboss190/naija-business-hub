@@ -193,7 +193,7 @@ export default function ConfirmEmailPage() {
                       value={email}
                       onChange={function(e) { setEmail(e.target.value) }}
                       placeholder="your@email.com"
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-dark-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-4 py-3 text-base md:text-sm rounded-lg border border-gray-300 dark:border-dark-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
                 )}

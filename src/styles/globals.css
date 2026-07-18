@@ -8,48 +8,23 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
   }
   
   *, *::before, *::after {
     box-sizing: border-box;
   }
 
-  /* Force dark mode on all inputs, selects, textareas */
-  .dark input[type="text"],
-  .dark input[type="email"],
-  .dark input[type="password"],
-  .dark input[type="number"],
-  .dark input[type="search"],
-  .dark input[type="tel"],
-  .dark input[type="url"],
-  .dark textarea {
-    background-color: #1e293b !important;
-    color: #e2e8f0 !important;
-    border-color: #334155 !important;
+  @media (max-width: 768px) {
+    button, a, input, select, textarea {
+      min-height: 44px;
+    }
   }
 
-  .dark input::placeholder,
-  .dark textarea::placeholder {
-    color: #64748b !important;
-  }
-
-  .dark select {
-    background-color: #1e293b !important;
-    color: #e2e8f0 !important;
-    border-color: #334155 !important;
-  }
-
-  .dark select option {
-    background-color: #1e293b !important;
-    color: #e2e8f0 !important;
-  }
-
-  /* Fix focus states */
-  .dark input:focus,
-  .dark textarea:focus,
-  .dark select:focus {
-    border-color: #22c55e !important;
-    ring-color: #22c55e !important;
+  @media screen and (max-width: 768px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
   }
 }
 
@@ -58,65 +33,73 @@
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  .card {
-    @apply bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-xl;
+  .responsive-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6;
   }
 
-  .input {
-    @apply w-full px-4 py-3 rounded-lg border border-gray-300;
+  .responsive-card {
+    @apply p-4 md:p-6 rounded-xl border border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800;
   }
 
-  .select {
-    @apply w-full px-4 py-3 rounded-lg border border-gray-300;
-  }
-
-  .textarea {
-    @apply w-full px-4 py-3 rounded-lg border border-gray-300 resize-none;
+  .has-bottom-nav {
+    @apply pb-20 md:pb-0;
   }
 }
 
-/* Dark mode autofill override */
-.dark input:-webkit-autofill,
-.dark input:-webkit-autofill:hover,
-.dark input:-webkit-autofill:focus,
-.dark textarea:-webkit-autofill,
-.dark textarea:-webkit-autofill:hover,
-.dark textarea:-webkit-autofill:focus,
-.dark select:-webkit-autofill,
-.dark select:-webkit-autofill:hover,
-.dark select:-webkit-autofill:focus {
-  -webkit-text-fill-color: #e2e8f0 !important;
-  -webkit-box-shadow: 0 0 0px 1000px #1e293b inset !important;
-  transition: background-color 5000s ease-in-out 0s;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #f1f1f1; }
 .dark ::-webkit-scrollbar-track { background: #1e293b; }
-::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
 .dark ::-webkit-scrollbar-thumb { background: #475569; }
-::-webkit-scrollbar-thumb:hover { background: #555; }
-.dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
-/* Selection */
-::selection { background-color: #22c55e; color: white; }
+html { scroll-behavior: smooth; }
 
-/* Prose overrides for dark mode */
-.dark .prose {
-  color: #e2e8f0;
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+  .safe-top { padding-top: env(safe-area-inset-top); }
 }
-.dark .prose h1,
-.dark .prose h2,
-.dark .prose h3,
-.dark .prose h4,
-.dark .prose strong {
-  color: #f1f5f9;
+
+/* Focus visible styles for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #16a34a !important;
+  outline-offset: 2px !important;
+  border-radius: 4px;
 }
-.dark .prose a {
-  color: #4ade80;
+
+/* Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: #16a34a;
+  color: white;
+  padding: 8px 16px;
+  z-index: 100;
+  transition: top 0.3s;
 }
-.dark .prose code {
-  background-color: #1e293b;
-  color: #e2e8f0;
+.skip-to-main:focus {
+  top: 0;
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

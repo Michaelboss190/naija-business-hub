@@ -94,7 +94,7 @@ export default function VendorsPage() {
                   <div className="flex items-start gap-3 md:gap-4 mb-3 md:mb-4">
                     <div className="w-14 h-14 md:w-16 md:h-16 bg-gray-100 dark:bg-dark-700 rounded-xl flex items-center justify-center text-xl md:text-2xl flex-shrink-0 overflow-hidden">
                       {vendor.logo_url ? (
-                        <img src={vendor.logo_url} alt={vendor.business_name || ''} className="w-full h-full object-cover" />
+                        <img loading="lazy" src={vendor.logo_url} alt={vendor.business_name || ''} className="w-full h-full object-cover" />
                       ) : (
                         <span className="text-gray-600 dark:text-gray-400 font-bold">{(vendor.business_name || 'B')[0]}</span>
                       )}

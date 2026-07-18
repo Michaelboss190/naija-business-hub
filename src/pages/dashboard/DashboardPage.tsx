@@ -17,7 +17,7 @@ export default function DashboardPage() {
         .select('*, author:profiles(username, avatar_url), category:forum_categories(name, color)')
         .eq('status', 'published')
         .order('created_at', { ascending: false })
-        .limit(5)
+        .limit(3)
     }
   )
 
@@ -26,10 +26,10 @@ export default function DashboardPage() {
     function() {
       return supabase
         .from('bookmarks')
-        .select('*, post:forum_posts(id, title, slug, created_at)')
+        .select('id, post_id, resource_id, created_at, post:forum_posts(id, title, slug, created_at, author:profiles(username)), resource:resources(id, title, slug, created_at)')
         .eq('user_id', profile?.id)
         .order('created_at', { ascending: false })
-        .limit(5)
+        .limit(10)
     },
     { enabled: !!profile?.id }
   )
@@ -55,7 +55,7 @@ export default function DashboardPage() {
         .select('*')
         .eq('user_id', profile?.id)
         .order('created_at', { ascending: false })
-        .limit(5)
+        .limit(3)
     },
     { enabled: !!profile?.id }
   )
@@ -96,26 +96,16 @@ export default function DashboardPage() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl p-8 text-white">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-2xl md:text-3xl font-display font-bold mb-2">
-              Welcome back, {profile?.full_name?.split(' ')[0] || 'Entrepreneur'}! 👋
-            </h1>
-            <p className="text-primary-100">
-              {profile?.is_premium ? 'Enjoying your premium benefits. Keep growing your business!' : 'Ready to take your business to the next level?'}
-            </p>
-            {mySubscription?.ends_at && (
-              <p className="text-primary-200 text-sm mt-2">Premium expires: {formatDate(mySubscription.ends_at)}</p>
-            )}
+            <h1 className="text-2xl md:text-3xl font-display font-bold mb-2">Welcome back, {profile?.full_name?.split(' ')[0] || 'Entrepreneur'}! 👋</h1>
+            <p className="text-primary-100">{profile?.is_premium ? 'Enjoying your premium benefits. Keep growing your business!' : 'Ready to take your business to the next level?'}</p>
+            {mySubscription?.ends_at && <p className="text-primary-200 text-sm mt-2">Premium expires: {formatDate(mySubscription.ends_at)}</p>}
           </div>
           {!profile?.is_premium ? (
             <Link to="/pricing" className="mt-4 md:mt-0">
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="px-6 py-3 bg-white text-primary-700 rounded-lg font-semibold hover:bg-primary-50 transition-colors">
-                Upgrade to Premium - ₦1,000/mo
-              </motion.button>
+              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="px-6 py-3 bg-white text-primary-700 rounded-lg font-semibold hover:bg-primary-50 transition-colors">Upgrade to Premium - ₦1,000/mo</motion.button>
             </Link>
           ) : (
-            <div className="mt-4 md:mt-0 flex items-center space-x-2 bg-white/20 rounded-lg px-4 py-2">
-              <span>⭐</span><span className="font-semibold">Premium Active</span>
-            </div>
+            <div className="mt-4 md:mt-0 flex items-center space-x-2 bg-white/20 rounded-lg px-4 py-2"><span>⭐</span><span className="font-semibold">Premium Active</span></div>
           )}
         </div>
       </motion.div>
@@ -147,20 +137,12 @@ export default function DashboardPage() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
                 <div className="flex items-center space-x-4 mb-4 sm:mb-0">
                   <div className="w-16 h-16 bg-gray-100 dark:bg-dark-700 rounded-xl flex items-center justify-center text-2xl overflow-hidden flex-shrink-0">
-                    {myVendor.logo_url ? (
-                      <img src={myVendor.logo_url} alt={myVendor.business_name || ''} className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-gray-600 dark:text-gray-400 font-bold">{(myVendor.business_name || 'B')[0]}</span>
-                    )}
+                    {myVendor.logo_url ? <img loading="lazy" src={myVendor.logo_url} alt={myVendor.business_name || ''} className="w-full h-full object-cover" /> : <span className="text-gray-600 dark:text-gray-400 font-bold">{(myVendor.business_name || 'B')[0]}</span>}
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">{myVendor.business_name}</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">{myVendor.category} • {myVendor.location}</p>
-                    <div className="flex items-center space-x-3 mt-1 text-sm text-gray-500 dark:text-gray-400">
-                      <span>👁 {myVendor.view_count || 0} views</span>
-                      {myVendor.rating > 0 && <span>⭐ {myVendor.rating}</span>}
-                      {myVendor.is_verified && <span className="text-blue-500">✓ Verified</span>}
-                    </div>
+                    <div className="flex items-center space-x-3 mt-1 text-sm text-gray-500 dark:text-gray-400"><span>👁 {myVendor.view_count || 0} views</span>{myVendor.rating > 0 && <span>⭐ {myVendor.rating}</span>}{myVendor.is_verified && <span className="text-blue-500">✓ Verified</span>}</div>
                   </div>
                 </div>
                 <div className="flex space-x-3">
@@ -170,7 +152,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="text-center py-6">
-                <p className="text-gray-600 dark:text-gray-400 mb-4">List your business in our vendor directory and get discovered by thousands of potential customers</p>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">List your business and get discovered by thousands of potential customers</p>
                 <Link to="/vendors/register"><Button>Register Your Business</Button></Link>
               </div>
             )}
@@ -181,18 +163,16 @@ export default function DashboardPage() {
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="bg-white dark:bg-dark-800 rounded-xl border border-gray-200 dark:border-dark-700 p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">📰 Recent Discussions</h2>
-            <Link to="/forum" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-700 dark:hover:text-primary-300">View all</Link>
+            <Link to="/forum" className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">View all</Link>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {recentPosts?.map(function(post: any) {
               return (
                 <Link key={post.id} to={'/forum/post/' + post.slug} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-700 transition-colors">
                   <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: post.category?.color || '#22c55e' }} />
                   <div className="flex-1 min-w-0">
                     <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{post.title}</h3>
-                    <div className="flex items-center space-x-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      <span>{post.author?.username}</span><span>•</span><span>{formatTimeAgo(post.created_at)}</span>
-                    </div>
+                    <div className="flex items-center space-x-2 mt-1 text-xs text-gray-500 dark:text-gray-400"><span>{post.author?.username}</span><span>•</span><span>{formatTimeAgo(post.created_at)}</span></div>
                   </div>
                 </Link>
               )
@@ -203,18 +183,39 @@ export default function DashboardPage() {
 
         {/* Bookmarks */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }} className="bg-white dark:bg-dark-800 rounded-xl border border-gray-200 dark:border-dark-700 p-6">
-          <div className="flex items-center justify-between mb-6"><h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">🔖 Your Bookmarks</h2></div>
-          <div className="space-y-4">
-            {myBookmarks?.map(function(bookmark: any) {
-              return (
-                <Link key={bookmark.id} to={'/forum/post/' + bookmark.post?.slug} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-700 transition-colors">
-                  <span className="text-lg flex-shrink-0">📌</span>
-                  <div className="flex-1 min-w-0"><h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{bookmark.post?.title}</h3></div>
-                </Link>
-              )
-            })}
-            {(!myBookmarks || myBookmarks.length === 0) && (
-              <div className="text-center py-4"><p className="text-gray-500 dark:text-gray-400 mb-2">No bookmarks yet</p><Link to="/forum" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-700 dark:hover:text-primary-300">Browse discussions</Link></div>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">🔖 Your Bookmarks</h2>
+            {myBookmarks && myBookmarks.length > 3 && (
+              <span className="text-xs text-gray-500 dark:text-gray-400">{myBookmarks.length} items</span>
+            )}
+          </div>
+          <div className={`space-y-3 ${myBookmarks && myBookmarks.length > 3 ? 'max-h-64 overflow-y-auto pr-2' : ''}`}>
+            {myBookmarks && myBookmarks.length > 0 ? (
+              myBookmarks.map(function(bookmark: any) {
+                const isPost = !!bookmark.post_id
+                const item = isPost ? bookmark.post : bookmark.resource
+                const link = isPost ? '/forum/post/' + (item?.slug || '') : '/resources/' + (item?.slug || '')
+                return (
+                  <Link key={bookmark.id} to={link} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-700 transition-colors">
+                    <span className="text-lg flex-shrink-0 mt-0.5">{isPost ? '💬' : '📄'}</span>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{item?.title || 'Untitled'}</h3>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        {isPost ? 'Forum Post' : 'Resource'}
+                        {isPost && bookmark.post?.author?.username ? ' by ' + bookmark.post.author.username : ''}
+                      </p>
+                    </div>
+                  </Link>
+                )
+              })
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-gray-500 dark:text-gray-400 mb-2">No bookmarks yet</p>
+                <div className="flex justify-center gap-4">
+                  <Link to="/forum" className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">Browse Forum</Link>
+                  <Link to="/resources" className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">Browse Resources</Link>
+                </div>
+              </div>
             )}
           </div>
         </motion.div>
@@ -223,19 +224,20 @@ export default function DashboardPage() {
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="bg-white dark:bg-dark-800 rounded-xl border border-gray-200 dark:border-dark-700 p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">📅 Upcoming Events</h2>
-            <Link to="/events" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-700 dark:hover:text-primary-300">View all</Link>
+            <Link to="/events" className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">View all</Link>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {upcomingEvents?.map(function(event: any) {
               return (
                 <Link key={event.id} to={'/events/' + event.slug} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-700 transition-colors">
                   <div className="flex-shrink-0 w-14 h-14 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex flex-col items-center justify-center">
-                    <span className="text-xs text-gray-600 dark:text-gray-400 font-semibold">{new Date(event.start_at).toLocaleDateString('en-NG', { month: 'short' })}</span>
+                    <span className="text-xs text-primary-600 dark:text-primary-400 font-semibold">{new Date(event.start_at).toLocaleDateString('en-NG', { month: 'short' })}</span>
                     <span className="text-lg font-bold text-primary-700 dark:text-primary-400">{new Date(event.start_at).getDate()}</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{event.title}</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{event.event_type === 'online' ? '🌐 Online' : '📍 ' + event.location}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{event.event_type === 'online' ? '🌐 Online' : '📍 ' + (event.location || 'TBA')}</p>
+                    {event.is_premium && <span className="text-xs text-yellow-600 dark:text-yellow-400">⭐ Premium</span>}
                   </div>
                 </Link>
               )
@@ -248,13 +250,13 @@ export default function DashboardPage() {
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }} className="bg-white dark:bg-dark-800 rounded-xl border border-gray-200 dark:border-dark-700 p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">🔔 Notifications</h2>
-            <Link to="/notifications" className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-700 dark:hover:text-primary-300">View all</Link>
+            <Link to="/notifications" className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">View all</Link>
           </div>
           <div className="space-y-3">
             {notifications?.map(function(notif: any) {
               return (
                 <div key={notif.id} className={`flex items-start space-x-3 p-3 rounded-lg transition-colors ${notif.is_read ? '' : 'bg-primary-50 dark:bg-primary-900/10'}`}>
-                  <span className="text-lg flex-shrink-0">{notif.type === 'comment' ? '💬' : notif.type === 'like' ? '❤️' : notif.type === 'event' ? '📅' : '🔔'}</span>
+                  <span className="text-lg flex-shrink-0">{notif.type === 'comment' ? '💬' : notif.type === 'like' ? '❤️' : notif.type === 'event' ? '📅' : notif.type === 'message' ? '💌' : '🔔'}</span>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-gray-900 dark:text-gray-100">{notif.title}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{notif.message}</p>

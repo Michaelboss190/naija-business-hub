@@ -75,7 +75,7 @@ export default function MasterclassesPage() {
               <motion.div key={course.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}>
                 <Link to={'/masterclasses/' + course.slug} className="block bg-white dark:bg-dark-800 rounded-xl border border-gray-200 dark:border-dark-700 overflow-hidden hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-lg dark:hover:shadow-black/20 transition-all h-full">
                   <div className="h-48 bg-gradient-to-br from-primary-400 to-primary-600 relative flex items-center justify-center">
-                    {course.thumbnail_url ? <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" /> : <span className="text-6xl">🎓</span>}
+                    {course.thumbnail_url ? <img loading="lazy" src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" /> : <span className="text-6xl">🎓</span>}
                     <div className="absolute top-3 left-3 flex space-x-2">
                       {course.is_live && <span className="px-2 py-1 bg-red-500 text-white rounded-full text-xs font-bold animate-pulse">🔴 LIVE</span>}
                       <span className="px-2 py-1 bg-yellow-400 text-yellow-900 rounded-full text-xs font-bold">⭐ Premium</span>
@@ -100,7 +100,7 @@ export default function MasterclassesPage() {
                     {course.instructor && (
                       <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-dark-700">
                         <div className="w-8 h-8 bg-gray-100 dark:bg-dark-700 rounded-full flex items-center justify-center overflow-hidden">
-                          {course.instructor?.avatar_url ? <img src={course.instructor.avatar_url} alt={course.instructor?.full_name || ''} className="w-full h-full object-cover" /> : <span className="text-gray-600 dark:text-gray-400 text-xs font-semibold">{(course.instructor?.full_name || 'I')[0]?.toUpperCase()}</span>}
+                          {course.instructor?.avatar_url ? <img loading="lazy" src={course.instructor.avatar_url} alt={course.instructor?.full_name || ''} className="w-full h-full object-cover" /> : <span className="text-gray-600 dark:text-gray-400 text-xs font-semibold">{(course.instructor?.full_name || 'I')[0]?.toUpperCase()}</span>}
                         </div>
                         <span className="text-xs text-gray-600 dark:text-gray-400">{course.instructor.full_name}</span>
                       </div>

@@ -60,7 +60,7 @@ export default function BlogPage() {
             return (
               <Link key={post.id} to={'/blog/' + post.slug} className="group relative bg-white dark:bg-dark-800 rounded-xl border border-gray-200 dark:border-dark-700 overflow-hidden hover:shadow-lg dark:hover:shadow-black/20 transition-all">
                 <div className="h-48 bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-4xl">
-                  {post.featured_image_url ? <img src={post.featured_image_url} alt={post.title} className="w-full h-full object-cover" /> : <span>📝</span>}
+                  {post.featured_image_url ? <img loading="lazy" src={post.featured_image_url} alt={post.title} className="w-full h-full object-cover" /> : <span>📝</span>}
                 </div>
                 <div className="p-4 md:p-6">
                   <span className="px-2 py-1 bg-gray-100 dark:bg-dark-700 text-primary-700 dark:text-primary-400 rounded-full text-xs font-medium">{post.category}</span>
@@ -90,7 +90,7 @@ export default function BlogPage() {
               <motion.div key={post.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}>
                 <Link to={'/blog/' + post.slug} className="block bg-white dark:bg-dark-800 rounded-xl border border-gray-200 dark:border-dark-700 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-lg dark:hover:shadow-black/20 transition-all overflow-hidden h-full">
                   <div className="h-40 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-dark-700 dark:to-dark-600 flex items-center justify-center text-4xl">
-                    {post.featured_image_url ? <img src={post.featured_image_url} alt={post.title} className="w-full h-full object-cover" /> : <span>📄</span>}
+                    {post.featured_image_url ? <img loading="lazy" src={post.featured_image_url} alt={post.title} className="w-full h-full object-cover" /> : <span>📄</span>}
                   </div>
                   <div className="p-4 md:p-6">
                     <div className="flex items-center gap-2 mb-3">

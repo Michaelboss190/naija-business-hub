@@ -27,7 +27,7 @@ export default function ConfirmDialog({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -39,7 +39,7 @@ export default function ConfirmDialog({
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="relative bg-white dark:bg-dark-800 rounded-xl border border-gray-200 dark:border-dark-700 p-6 max-w-md w-full shadow-xl"
+            className="relative bg-white dark:bg-dark-800 rounded-t-xl sm:rounded-t-xl sm:rounded-t-xl sm:rounded-xl border border-gray-200 dark:border-dark-700 p-6 max-w-md w-full shadow-xl max-h-[85vh] overflow-y-auto max-h-[85vh] overflow-y-auto max-h-[85vh] overflow-y-auto"
           >
             <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">{title}</h3>
             <p className="text-gray-600 dark:text-gray-400 mb-6">{message}</p>

@@ -25,7 +25,7 @@ export default function DashboardLayout() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-950">
-      <nav className="bg-white dark:bg-dark-900 border-b border-gray-200 dark:border-dark-800 sticky top-0 z-40">
+      <nav role="navigation" className="bg-white dark:bg-dark-900 border-b border-gray-200 dark:border-dark-800 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <SiteLogo size="sm" />
@@ -34,7 +34,7 @@ export default function DashboardLayout() {
               <Link to="/vendors" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">Vendors</Link>
               <Link to="/resources" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">Resources</Link>
               <div className="w-8 h-8 bg-gray-100 dark:bg-dark-700 rounded-full flex items-center justify-center overflow-hidden">
-                {profile?.avatar_url ? <img src={profile.avatar_url} alt={profile?.full_name || 'User'} className="w-full h-full object-cover" /> : <span className="text-gray-600 dark:text-gray-400 font-medium text-sm">{profile?.full_name?.[0]?.toUpperCase() || 'U'}</span>}
+                {profile?.avatar_url ? <img loading="lazy" src={profile.avatar_url} alt={profile?.full_name || 'User'} className="w-full h-full object-cover" /> : <span className="text-gray-600 dark:text-gray-400 font-medium text-sm">{profile?.full_name?.[0]?.toUpperCase() || 'U'}</span>}
               </div>
             </div>
           </div>
@@ -46,11 +46,11 @@ export default function DashboardLayout() {
             <div className="bg-white dark:bg-dark-800 rounded-xl border border-gray-200 dark:border-dark-700 p-6 sticky top-24">
               <div className="flex items-center space-x-3 mb-6 pb-6 border-b border-gray-100 dark:border-dark-700">
                 <div className="w-12 h-12 bg-gray-100 dark:bg-dark-700 rounded-full flex items-center justify-center overflow-hidden">
-                  {profile?.avatar_url ? <img src={profile.avatar_url} alt={profile?.full_name || 'User'} className="w-full h-full object-cover" /> : <span className="text-gray-600 dark:text-gray-400 font-semibold text-lg">{profile?.full_name?.[0]?.toUpperCase() || 'U'}</span>}
+                  {profile?.avatar_url ? <img loading="lazy" src={profile.avatar_url} alt={profile?.full_name || 'User'} className="w-full h-full object-cover" /> : <span className="text-gray-600 dark:text-gray-400 font-semibold text-lg">{profile?.full_name?.[0]?.toUpperCase() || 'U'}</span>}
                 </div>
                 <div><div className="font-semibold text-gray-900 dark:text-gray-100">{profile?.full_name || 'User'}</div><div className="text-sm text-gray-500 dark:text-gray-400">@{profile?.username}</div></div>
               </div>
-              <nav className="space-y-1">
+              <nav role="navigation" className="space-y-1">
                 {sidebarLinks.map(function(link) {
                   const isActive = location.pathname === link.href || location.pathname.startsWith(link.href + '/')
                   return <Link key={link.href} to={link.href} className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${isActive ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-700 hover:text-gray-900 dark:hover:text-gray-100'}`}>{link.icon}<span className="font-medium">{link.title}</span></Link>
@@ -63,7 +63,7 @@ export default function DashboardLayout() {
               )}
             </div>
           </aside>
-          <main className="flex-1 min-w-0"><Outlet /></main>
+          <main className="flex-1 min-w-0 has-bottom-nav"><Outlet /></main>
         </div>
       </div>
     </div>

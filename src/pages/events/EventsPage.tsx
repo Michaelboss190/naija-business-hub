@@ -86,7 +86,7 @@ export default function EventsPage() {
                     {event.organizer && (
                       <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-dark-700">
                         <div className="w-6 h-6 bg-gray-100 dark:bg-dark-700 rounded-full flex items-center justify-center overflow-hidden">
-                          {event.organizer?.avatar_url ? <img src={event.organizer.avatar_url} alt="" className="w-full h-full object-cover" /> : <span className="text-gray-500 dark:text-gray-400 text-xs">{event.organizer?.full_name?.charAt(0)?.toUpperCase() || "U"}</span>}
+                          {event.organizer?.avatar_url ? <img loading="lazy" src={event.organizer.avatar_url} alt="Image" className="w-full h-full object-cover" /> : <span className="text-gray-500 dark:text-gray-400 text-xs">{event.organizer?.full_name?.charAt(0)?.toUpperCase() || "U"}</span>}
                         </div>
                         <span className="text-xs text-gray-500 dark:text-gray-400">{event.organizer.full_name}</span>
                       </div>

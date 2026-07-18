@@ -18,7 +18,7 @@ export default function Avatar({ src, name, size = 'md', className = '' }: Avata
   return (
     <div className={`${sizeClasses[size]} bg-gray-100 dark:bg-dark-700 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 ${className}`}>
       {src ? (
-        <img src={src} alt={name || 'User'} className="w-full h-full object-cover" />
+        <img loading="lazy" src={src} alt={name || 'User'} className="w-full h-full object-cover" />
       ) : (
         <span className="text-gray-600 dark:text-gray-400 font-semibold">{firstLetter}</span>
       )}

@@ -257,7 +257,7 @@ export default function ResetPasswordPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">New Password</label>
-                <input type="password" autoComplete="new-password" {...register('password')} className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-dark-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-primary-500" placeholder="Enter new password" />
+                <input type="password" autoComplete="new-password" {...register('password')} className="w-full px-4 py-3 text-base md:text-sm rounded-lg border border-gray-300 dark:border-dark-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-primary-500" placeholder="Enter new password" />
                 {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
                 {password.length > 0 && (
                   <div className="mt-3">
@@ -272,7 +272,7 @@ export default function ResetPasswordPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirm Password</label>
-                <input type="password" autoComplete="new-password" {...register('confirmPassword')} className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-dark-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-primary-500" placeholder="Confirm new password" />
+                <input type="password" autoComplete="new-password" {...register('confirmPassword')} className="w-full px-4 py-3 text-base md:text-sm rounded-lg border border-gray-300 dark:border-dark-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-primary-500" placeholder="Confirm new password" />
                 {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>}
               </div>
               <Button type="submit" isLoading={isLoading} className="w-full" size="lg">Update Password</Button>

@@ -81,7 +81,7 @@ export default function AdminLayout() {
 
       <div className="flex">
         <aside className="w-64 bg-white dark:bg-dark-800 border-r border-gray-200 dark:border-dark-700 min-h-[calc(100vh-4rem)]">
-          <nav className="p-4 space-y-1">
+          <nav role="navigation" className="p-4 space-y-1">
             {adminLinks.map((link) => {
               const isActive = location.pathname === link.href
               return (

@@ -249,7 +249,7 @@ export default function EventPage() {
               <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Organized by</h3>
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gray-100 dark:bg-dark-700 rounded-full flex items-center justify-center overflow-hidden">
-                  {event.organizer?.avatar_url ? <img src={event.organizer.avatar_url} alt="" className="w-full h-full object-cover" /> : <span className="text-gray-600 dark:text-gray-400 font-semibold">{event.organizer?.full_name?.charAt(0)?.toUpperCase() || "U"}</span>}
+                  {event.organizer?.avatar_url ? <img src={event.organizer.avatar_url} alt="Image" className="w-full h-full object-cover" /> : <span className="text-gray-600 dark:text-gray-400 font-semibold">{event.organizer?.full_name?.charAt(0)?.toUpperCase() || "U"}</span>}
                 </div>
                 <div><p className="font-medium text-gray-900 dark:text-gray-100">{event.organizer.full_name}</p><p className="text-sm text-gray-500 dark:text-gray-400">@{event.organizer.username}</p></div>
               </div>

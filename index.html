@@ -17,7 +17,11 @@
     <title>NaijaBizHub - Nigeria's #1 Business Community</title>
     <meta name="title" content="NaijaBizHub - Nigeria's #1 Business Community" />
     <meta name="description" content="The ultimate platform for Nigerian entrepreneurs. Connect with freelancers, skincare vendors, food business owners. Access resources, vendors, masterclasses, and grow your business." />
-    <meta name="theme-color" content="#16a34a" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#16a34a" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
     
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://naijabusiness.vercel.app" />
@@ -38,6 +42,7 @@
     <script src="https://js.paystack.co/v2/inline.js"></script>
   </head>
   <body>
+    <a href="#root" class="skip-to-main">Skip to main content</a>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
