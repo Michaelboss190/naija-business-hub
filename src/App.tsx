@@ -32,6 +32,7 @@ import MasterclassesPage from '@/pages/resources/MasterclassesPage'
 import MasterclassPage from '@/pages/resources/MasterclassPage'
 import CreateMasterclassPage from '@/pages/resources/CreateMasterclassPage'
 import TemplatesPage from '@/pages/resources/TemplatesPage'
+import CreateTemplatePage from '@/pages/resources/CreateTemplatePage'
 import VendorsPage from '@/pages/vendors/VendorsPage'
 import VendorPage from '@/pages/vendors/VendorPage'
 import RegisterVendorPage from '@/pages/vendors/RegisterVendorPage'
@@ -119,7 +120,7 @@ export default function App() {
               <Route path="/masterclasses/:slug" element={<MasterclassPage />} />
 
               {/* Templates */}
-              <Route path="/templates" element={<TemplatesPage />} />
+              <Route path="/templates" element={<TemplatesPage />} />`n              <Route path="/templates/new" element={<CreateTemplatePage />} />
 
               {/* Vendors - static before dynamic */}
               <Route path="/vendors" element={<VendorsPage />} />

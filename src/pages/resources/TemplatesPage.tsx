@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '@/hooks/useAuth'
 import { motion } from 'framer-motion'
 import { useSupabaseQuery } from '@/hooks/useSupabaseQuery'
 import { supabase } from '@/config/supabase'
-import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/Button'
 import { useDebounce } from '@/hooks/useDebounce'
 import PageHeader from '@/components/ui/PageHeader'
@@ -44,7 +44,7 @@ export default function TemplatesPage() {
   if (error) {
     return (
       <div className="container-custom py-8">
-        <ErrorState title="Failed to load templates" message="There was an error loading templates. Please try again." onRetry={function() { refetch() }} />
+        <ErrorState title="Failed to load templates" message="There was an error loading templates." onRetry={function() { refetch() }} />
       </div>
     )
   }
@@ -54,13 +54,13 @@ export default function TemplatesPage() {
       <PageHeader
         title="Business Templates"
         description="Download ready-to-use templates for your business"
+        actions={isAuthenticated ? <Link to="/templates/new"><Button>+ Upload Template</Button></Link> : undefined}
       />
 
       {!profile?.is_premium && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-gradient-to-r from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 rounded-xl p-4 mb-6 text-center border border-yellow-200 dark:border-yellow-800">
           <p className="text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-semibold">⭐ Premium:</span> Browse templates for free.{' '}
-            <Link to="/pricing" className="text-gray-600 dark:text-gray-400 font-medium hover:underline">Upgrade to Premium (₦1,000/mo)</Link> to download.
+            ⭐ <Link to="/pricing" className="text-primary-600 dark:text-primary-400 font-medium hover:underline">Upgrade to Premium (₦1,000/mo)</Link> to download templates.
           </p>
         </motion.div>
       )}
@@ -98,7 +98,7 @@ export default function TemplatesPage() {
           })}
         </div>
       ) : (
-        <EmptyState icon="📋" title="No templates found" description={debouncedSearch ? 'No templates match your search.' : 'Templates will appear here.'} />
+        <EmptyState icon="📋" title="No templates found" description={debouncedSearch ? 'No templates match your search.' : 'Templates will appear here once uploaded.'} actionLabel={isAuthenticated ? 'Upload First Template' : undefined} actionLink={isAuthenticated ? '/templates/new' : undefined} />
       )}
     </div>
   )
