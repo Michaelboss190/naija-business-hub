@@ -5,9 +5,8 @@ import { useSupabaseQuery } from '@/hooks/useSupabaseQuery'
 import { supabase } from '@/config/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/Button'
-import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import { createNotification } from '@/lib/notifications'
-import { formatDate, formatTimeAgo } from '@/lib/utils'
+import { formatTimeAgo } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
 export default function VendorPage() {
@@ -55,12 +54,12 @@ export default function VendorPage() {
   const ratingCount = reviews?.length || 0
   const avgRating = ratingCount > 0 ? (reviews?.reduce(function(sum: number, r: any) { return sum + (r.rating || 0) }, 0) / ratingCount).toFixed(1) : '0.0'
 
-  const handleSubmitReview = async (data: { rating: number; title: string; content: string }) => {
+  const handleSubmitReview = async (rating: number, title: string, content: string) => {
     if (!isAuthenticated) { toast.error('Please login'); navigate('/login'); return }
-    if (data.rating === 0) { toast.error('Select a rating'); return }
+    if (rating === 0) { toast.error('Select a rating'); return }
     setIsSubmitting(true)
     try {
-      await supabase.from('reviews').insert({ user_id: profile?.id, vendor_id: vendor?.id, rating: data.rating, title: data.title, content: data.content })
+      await supabase.from('reviews').insert({ user_id: profile?.id, vendor_id: vendor?.id, rating: rating, title: title, content: content })
       toast.success('Review submitted!')
       setShowReviewForm(false); setSelectedRating(0); refetchReviews(); refetch()
       if (vendor?.owner_id && vendor.owner_id !== profile?.id) {
@@ -116,21 +115,46 @@ export default function VendorPage() {
 
   const handleDeleteProduct = async (productId: string) => {
     if (!isOwner) return
-    try {
-      await supabase.from('vendor_products').delete().eq('id', productId)
-      toast.success('Product removed')
-      refetchProducts()
-    } catch (error: any) { toast.error(error.message || 'Failed') }
+    try { await supabase.from('vendor_products').delete().eq('id', productId); toast.success('Product removed'); refetchProducts() }
+    catch (error: any) { toast.error(error.message || 'Failed') }
   }
 
-  if (isLoading) return <div className="container-custom py-8"><div className="animate-pulse max-w-5xl mx-auto space-y-6"><div className="h-8 bg-gray-200 dark:bg-dark-600 rounded w-1/4"></div><div className="h-64 bg-gray-200 dark:bg-dark-600 rounded-xl"></div></div></div>
-  if (!vendor) return <div className="container-custom py-16 text-center"><div className="text-6xl mb-4">🏪</div><h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Vendor not found</h2><Link to="/vendors"><Button>Back to Directory</Button></Link></div>
+  const StarRating = function({ rating, size }: { rating: number; size: string }) {
+    const stars = []
+    const w = size === 'sm' ? 'w-3.5 h-3.5' : 'w-5 h-5'
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <svg key={i} className={w + ' ' + (i <= Math.round(rating) ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600')} fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+        </svg>
+      )
+    }
+    return <div className="flex items-center gap-0.5">{stars}</div>
+  }
+
+  if (isLoading) return (
+    <div className="container-custom py-8">
+      <div className="animate-pulse max-w-5xl mx-auto space-y-6">
+        <div className="h-8 bg-gray-200 dark:bg-dark-600 rounded w-1/4"></div>
+        <div className="h-64 bg-gray-200 dark:bg-dark-600 rounded-xl"></div>
+      </div>
+    </div>
+  )
+
+  if (!vendor) return (
+    <div className="container-custom py-16 text-center">
+      <div className="text-6xl mb-4">🏪</div>
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Vendor not found</h2>
+      <Link to="/vendors"><Button>Back to Directory</Button></Link>
+    </div>
+  )
 
   return (
     <div className="container-custom py-8">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-5xl mx-auto">
         <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-6">
-          <Link to="/vendors" className="hover:text-primary-600 dark:hover:text-primary-400">Vendor Directory</Link><span>/</span><span className="text-gray-900 dark:text-gray-100 font-medium">{vendor.business_name}</span>
+          <Link to="/vendors" className="hover:text-primary-600 dark:hover:text-primary-400">Vendor Directory</Link><span>/</span>
+          <span className="text-gray-900 dark:text-gray-100 font-medium">{vendor.business_name}</span>
         </div>
 
         {/* Hero Card */}
@@ -152,16 +176,16 @@ export default function VendorPage() {
                   <span className="px-2 py-1 bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 rounded-full text-sm">{vendor.category}</span>
                   <span className="text-sm text-gray-500 dark:text-gray-400">📍 {vendor.location}</span>
                   <div className="flex items-center gap-1">
-                    {[1,2,3,4,5].map(function(s) { return <svg key={s} className={`w-4 h-4 ${s <= Math.round(Number(avgRating)) ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg> })}
+                    <StarRating rating={Number(avgRating)} size="sm" />
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{avgRating} ({ratingCount})</span>
                   </div>
                 </div>
               </div>
-              <div className="flex gap-2 w-full sm:w-auto">
+              <div className="flex gap-2 w-full sm:w-auto flex-wrap">
                 {!isOwner && (
                   <>
                     {vendor.phone && <a href={'tel:' + vendor.phone}><Button variant="outline" size="sm">📞 Call</Button></a>}
-                    {vendor.whatsapp && <a href={'https://wa.me/' + vendor.whatsapp.replace(/\D/g, '')} target="_blank" rel="noopener noreferrer"><Button variant="outline" size="sm" className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400">💬 WhatsApp</Button></a>}
+                    {vendor.whatsapp && <a href={'https://wa.me/' + vendor.whatsapp.replace(/\D/g, '')} target="_blank" rel="noopener noreferrer"><Button variant="outline" size="sm" className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">💬 WhatsApp</Button></a>}
                     <Button size="sm" onClick={function() { setShowContactForm(!showContactForm) }}>✉️ Message</Button>
                   </>
                 )}
@@ -201,7 +225,7 @@ export default function VendorPage() {
 
         {/* Tab Content */}
         <div className="space-y-8">
-          {/* About */}
+          {/* About Tab */}
           {activeTab === 'about' && (
             <div className="bg-white dark:bg-dark-800 rounded-xl border border-gray-200 dark:border-dark-700 p-6 md:p-8">
               <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">About {vendor.business_name}</h2>
@@ -223,14 +247,12 @@ export default function VendorPage() {
             </div>
           )}
 
-          {/* Products */}
+          {/* Products Tab */}
           {activeTab === 'products' && (
             <div className="bg-white dark:bg-dark-800 rounded-xl border border-gray-200 dark:border-dark-700 p-6 md:p-8">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Products & Services</h2>
-                {isOwner && (
-                  <Button size="sm" onClick={function() { setShowAddProduct(!showAddProduct) }}>{showAddProduct ? 'Cancel' : '+ Add Product'}</Button>
-                )}
+                {isOwner && <Button size="sm" onClick={function() { setShowAddProduct(!showAddProduct) }}>{showAddProduct ? 'Cancel' : '+ Add Product'}</Button>}
               </div>
 
               {isOwner && showAddProduct && (
@@ -239,7 +261,7 @@ export default function VendorPage() {
                   <textarea value={productDesc} onChange={function(e) { setProductDesc(e.target.value) }} rows={2} placeholder="Description (optional)" className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-dark-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 resize-none" />
                   <div className="flex gap-3">
                     <input value={productPrice} onChange={function(e) { setProductPrice(e.target.value) }} type="number" placeholder="Price (₦)" className="flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-dark-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500" />
-                    <Button onClick={handleAddProduct} isLoading={isAddingProduct}>Add Product</Button>
+                    <Button onClick={handleAddProduct} isLoading={isAddingProduct}>Add</Button>
                   </div>
                 </motion.div>
               )}
@@ -255,11 +277,7 @@ export default function VendorPage() {
                           {product.price && <p className="text-sm font-medium text-primary-600 dark:text-primary-400 mt-1">₦{product.price.toLocaleString()}</p>}
                         </div>
                         <div className="flex items-center gap-2 ml-4">
-                          {!isOwner && (
-                            <Button size="sm" variant="outline" onClick={function() { setChatProductId(chatProductId === product.id ? null : product.id); setChatMessage('') }}>
-                              💬 Chat
-                            </Button>
-                          )}
+                          {!isOwner && <Button size="sm" variant="outline" onClick={function() { setChatProductId(chatProductId === product.id ? null : product.id); setChatMessage('') }}>💬 Chat</Button>}
                           {isOwner && (
                             <button onClick={function() { handleDeleteProduct(product.id) }} className="text-red-500 hover:text-red-600 p-2" title="Delete">
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
@@ -274,12 +292,9 @@ export default function VendorPage() {
                 <p className="text-gray-500 dark:text-gray-400 text-center py-8">No products listed yet.</p>
               )}
 
-              {/* Chat about product */}
               {chatProductId && (
                 <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-6 p-4 bg-gray-50 dark:bg-dark-700 rounded-lg border border-gray-200 dark:border-dark-600">
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Chat about: {products?.find(function(p: any) { return p.id === chatProductId })?.title}
-                  </p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Chat about: {products?.find(function(p: any) { return p.id === chatProductId })?.title}</p>
                   <textarea value={chatMessage} onChange={function(e) { setChatMessage(e.target.value) }} rows={2} placeholder="Ask about this product..." className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-dark-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 resize-none mb-3" />
                   <div className="flex justify-end gap-3">
                     <Button variant="outline" size="sm" onClick={function() { setChatProductId(null) }}>Cancel</Button>
@@ -290,7 +305,7 @@ export default function VendorPage() {
             </div>
           )}
 
-          {/* Reviews */}
+          {/* Reviews Tab */}
           {activeTab === 'reviews' && (
             <div className="bg-white dark:bg-dark-800 rounded-xl border border-gray-200 dark:border-dark-700 p-6 md:p-8">
               <div className="flex items-center justify-between mb-6">
@@ -299,10 +314,11 @@ export default function VendorPage() {
                   <Button size="sm" onClick={function() { setShowReviewForm(!showReviewForm) }}>{showReviewForm ? 'Cancel' : 'Write Review'}</Button>
                 )}
               </div>
+
               {showReviewForm && (
                 <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8 p-6 bg-gray-50 dark:bg-dark-700 rounded-xl border border-gray-200 dark:border-dark-600">
                   <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Write Your Review</h3>
-                  <form onSubmit={function(e: React.FormEvent) { e.preventDefault(); const t = (document.getElementById('review-title') as HTMLInputElement)?.value || ''; const c = (document.getElementById('review-content') as HTMLTextAreaElement)?.value || ''; if (!t || t.length < 3) { toast.error('Title required'); return }; if (!c || c.length < 10) { toast.error('Review too short'); return }; handleSubmitReview({ rating: selectedRating, title: t, content: c }) }} className="space-y-4">
+                  <form onSubmit={function(e: React.FormEvent) { e.preventDefault(); const t = (document.getElementById('review-title') as HTMLInputElement)?.value || ''; const c = (document.getElementById('review-content') as HTMLTextAreaElement)?.value || ''; if (!t || t.length < 3) { toast.error('Title required'); return }; if (!c || c.length < 10) { toast.error('Review too short'); return }; handleSubmitReview(selectedRating, t, c) }} className="space-y-4">
                     <div><label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rating</label><div className="flex items-center gap-1">{[1,2,3,4,5].map(function(s) { return <button key={s} type="button" onClick={function() { setSelectedRating(s) }} className="text-2xl transition-colors hover:scale-110"><svg className={`w-8 h-8 ${s <= selectedRating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></button> })}{selectedRating > 0 && <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">{['','Poor','Fair','Good','Very Good','Excellent!'][selectedRating]}</span>}</div></div>
                     <div><label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Title</label><input id="review-title" placeholder="Summary" className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-dark-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500" /></div>
                     <div><label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Review</label><textarea id="review-content" rows={4} placeholder="Share your experience..." className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-dark-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 resize-none" /></div>
@@ -310,6 +326,7 @@ export default function VendorPage() {
                   </form>
                 </motion.div>
               )}
+
               {ratingCount > 0 ? (
                 <div className="space-y-6">
                   {reviews?.map(function(review: any) {
@@ -320,7 +337,11 @@ export default function VendorPage() {
                             {review.user?.avatar_url ? <img src={review.user.avatar_url} alt="" className="w-full h-full object-cover" /> : <span className="text-gray-600 dark:text-gray-400 font-semibold text-sm">{(review.user?.full_name || 'U')[0]?.toUpperCase()}</span>}
                           </div>
                           <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1 flex-wrap"><span className="font-semibold text-gray-900 dark:text-gray-100">{review.user?.full_name || 'Anonymous'}</span><div className="flex items-center">{[1,2,3,4,5].map(function(s) { return <svg key={s} className={`w-3.5 h-3.5 ${s <= review.rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg> })})}</div><span className="text-xs text-gray-500 dark:text-gray-400">{formatTimeAgo(review.created_at)}</span></div>
+                            <div className="flex items-center gap-2 mb-1 flex-wrap">
+                              <span className="font-semibold text-gray-900 dark:text-gray-100">{review.user?.full_name || 'Anonymous'}</span>
+                              <StarRating rating={review.rating} size="sm" />
+                              <span className="text-xs text-gray-500 dark:text-gray-400">{formatTimeAgo(review.created_at)}</span>
+                            </div>
                             {review.title && <p className="font-medium text-gray-900 dark:text-gray-100 mb-1">{review.title}</p>}
                             {review.content && <p className="text-gray-700 dark:text-gray-300 text-sm">{review.content}</p>}
                           </div>
@@ -335,7 +356,7 @@ export default function VendorPage() {
             </div>
           )}
 
-          {/* Contact */}
+          {/* Contact Tab */}
           {activeTab === 'contact' && (
             <div className="bg-white dark:bg-dark-800 rounded-xl border border-gray-200 dark:border-dark-700 p-6 md:p-8">
               <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">Contact Information</h2>
