@@ -154,7 +154,7 @@ export default function SettingsPage() {
         <div className="border-b border-gray-200 dark:border-dark-700 overflow-x-auto">
           <div className="flex">
             {tabs.map((tab) => (
-              <button key={tab.id} onClick={() = aria-label="Button"> setActiveTab(tab.id)} className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.id ? 'border-primary-600 text-primary-600 dark:border-primary-400 dark:text-primary-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}`}>
+              <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.id ? 'border-primary-600 text-primary-600 dark:border-primary-400 dark:text-primary-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}`}>
                 {tab.label}
               </button>
             ))}
